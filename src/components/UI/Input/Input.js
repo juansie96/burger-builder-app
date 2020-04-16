@@ -37,7 +37,7 @@ const input = (props) => {
                     className={styles.InputElement}
                     value={props.value}
                     onChange={props.changed} >
-                    // Create a select option for each option on the array.
+                    {/* Create a select option for each option on the array. */}
                    { props.elementConfig.options.map(option => (
                         <option
                             key={option.value}
