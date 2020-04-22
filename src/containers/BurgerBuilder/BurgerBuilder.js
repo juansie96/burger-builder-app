@@ -26,8 +26,6 @@ class BurgerBuilder extends Component {
       return sum + el;
     }, 0);
 
-    console.log(sum);
-
     return sum > 0;
   }
 

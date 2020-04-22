@@ -1,13 +1,14 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import * as actions from "../../../store/actions/index";
+import {updateObject, checkValidity} from "../../../shared/utility";
 
 import Button from "../../../components/UI/Button/Button";
 import styles from "./ContactData.module.css";
 import Spinner from "../../../components/UI/Spinner/Spinner";
 import Input from "../../../components/UI/Input/Input";
-import { connect } from "react-redux";
 import axios from "../../../axios-orders";
 import withErrorHandler from "../../../hoc/withErrorHandler/withErrorHandler";
-import * as actions from "../../../store/actions/index";
 
 class ContactData extends Component {
   state = {
@@ -115,56 +116,20 @@ class ContactData extends Component {
 
   };
 
-  // Metodo para checkear la validez del form input
-  checkValidity(value, rules) {
-    let isValid = true;
-
-    if (!rules) {
-      isValid = true;
-    }
-
-    if (rules.required !== undefined) {
-      isValid = value.trim() !== "" && isValid;
-    }
-
-    if (rules.minLength) {
-      isValid = value.length >= rules.minLength && isValid;
-    }
-
-    if (rules.maxLength) {
-      isValid = value.length <= rules.maxLength && isValid;
-    }
-
-    if (rules.isEmail) {
-      const pattern = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
-      isValid = pattern.test(value) && isValid
-    }
-
-    if (rules.isNumeric) {
-      const pattern = /^\d+$/;
-      isValid = pattern.test(value) && isValid
-    }
-
-    return isValid;
-  }
-
   inputChangedHandler = (event, inputIdentifier) => {
-    // Cargamos el objeto orderForm en una nueva variable para no mutar el original
-    const updatedOrderForm = { ...this.state.orderForm };
 
-    // Hacemos lo mismo con el elemento que se actualizo del orderform
-    const updatedFormElement = { ...updatedOrderForm[inputIdentifier] };
+    const updatedFormElement = updateObject(this.state.orderForm[inputIdentifier], {
+       value: event.target.value,
+       valid: checkValidity(
+         event.target.value,
+         this.state.orderForm[inputIdentifier].validation
+       ),
+       touched: true
+    });
 
-    // Actualizamos valor, checkeamos validez y actualizamos estado
-    updatedFormElement.value = event.target.value;
-    updatedFormElement.valid = this.checkValidity(
-      updatedFormElement.value,
-      updatedFormElement.validation
-    );
-    updatedFormElement.touched = true;
-
-    // Cargamos el formElement actualizado
-    updatedOrderForm[inputIdentifier] = updatedFormElement;
+    const updatedOrderForm = updateObject(this.state.orderForm, {
+      [inputIdentifier]: updatedFormElement
+    })
 
     let formIsValid = true;
 
