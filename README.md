@@ -17,7 +17,7 @@ Burger Builder App requiere tener instalado Node para descargar las dependencias
 
 #### Clona el proyecto:
 ```
-https://github.com/juansie96/forkify
+https://github.com/juansie96/burger-builder-app
 ```
 
 #### Instala las dependencias:
